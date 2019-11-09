@@ -8,25 +8,25 @@ class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
      * @return void
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('email')->unique()->comment('邮箱');
             $table->string('password');
-            $table->rememberToken();
+            $table->string('portrait', 128)->comment('头像');
+            $table->unsignedInteger('login_count')->default(0)->comment('登录次数');
+            $table->string('last_login_ip')->comment('最后登录IP');
+            $table->unsignedTinyInteger('status')->default(1)->comment('状态，1正常 2禁止 3删除');
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
      * @return void
      */
     public function down()
