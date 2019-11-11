@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Traits\PassportToken;
 use Zend\Diactoros\Response as Psr7Response;
-use Illuminate\Auth\AuthenticationException;
 use Psr\Http\Message\ServerRequestInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -22,14 +21,12 @@ class AccessTokenController extends Controller
 
     const grantType = "password";
 
-
     /**
      * 获取token
      * @param AuthorizationRequest   $originRequest
      * @param AuthorizationServer    $server
      * @param ServerRequestInterface $serverRequest
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws AuthenticationException
      */
     public function authorizations(
         AuthorizationRequest $originRequest,
@@ -44,10 +41,9 @@ class AccessTokenController extends Controller
         $defaultParams = array_merge($defaultParams, $serverRequest->getParsedBody());
         $serverRequest = $serverRequest->withParsedBody($defaultParams);
         try {
-            return $server->respondToAccessTokenRequest($serverRequest,
-                new Psr7Response)->withStatus(201);
+            return $server->respondToAccessTokenRequest($serverRequest, new Psr7Response)->withStatus(201);
         } catch (OAuthServerException $e) {
-            throw new AuthenticationException($e->getMessage());
+            $this->errorUnauthorized();
         }
     }
 

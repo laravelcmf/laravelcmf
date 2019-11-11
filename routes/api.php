@@ -1,7 +1,4 @@
 <?php
-
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,15 +10,7 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-Route::namespace('Api')->group(function () {
-    //获取 token
-    Route::post('oauth/token', 'AccessTokenController@authorizations')->name('passport.token');
-
-    //刷新token
-    Route::put('oauth/token/refresh', 'TransientTokenController@refresh')->name('passport.token.refresh');
-});
+foreach (glob(app()->basePath('routes/api/*.php')) as $filename) {
+    include $filename;
+}
 

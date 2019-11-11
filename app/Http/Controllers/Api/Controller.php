@@ -9,10 +9,13 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Response\Factory;
 use App\Http\Controllers\Controller as BaseController;
 
 class Controller extends BaseController
 {
+    use Factory;
+
     protected $reservedWords = ['page', 'per_page', 'filters'];
 
     protected function ignoreReserved(array $params)
