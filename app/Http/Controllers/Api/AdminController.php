@@ -8,11 +8,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\AdminResource;
+
 class AdminController extends Controller
 {
     //管理员信息
     public function me()
     {
-
+        return new AdminResource(auth()->user());
     }
 }
