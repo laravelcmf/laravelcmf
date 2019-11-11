@@ -18,6 +18,10 @@ use Illuminate\Http\Request;
 //});
 
 Route::namespace('Api')->group(function () {
-    Route::post('authorizations', 'AccessTokenController@authorizations')->name('authorizations');
+    //获取 token
+    Route::post('oauth/token', 'AccessTokenController@authorizations')->name('passport.token');
+
+    //刷新token
+    Route::put('oauth/token/refresh', 'TransientTokenController@refresh')->name('passport.token.refresh');
 });
 

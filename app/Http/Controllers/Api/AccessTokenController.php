@@ -28,7 +28,7 @@ class AccessTokenController extends Controller
      * @param AuthorizationRequest   $originRequest
      * @param AuthorizationServer    $server
      * @param ServerRequestInterface $serverRequest
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws AuthenticationException
      */
     public function authorizations(
@@ -44,8 +44,8 @@ class AccessTokenController extends Controller
         $defaultParams = array_merge($defaultParams, $serverRequest->getParsedBody());
         $serverRequest = $serverRequest->withParsedBody($defaultParams);
         try {
-            return response()->json($server->respondToAccessTokenRequest($serverRequest,
-                new Psr7Response)->withStatus(201));
+            return $server->respondToAccessTokenRequest($serverRequest,
+                new Psr7Response)->withStatus(201);
         } catch (OAuthServerException $e) {
             throw new AuthenticationException($e->getMessage());
         }
