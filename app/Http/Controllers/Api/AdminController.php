@@ -1,13 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: JeffreyBool
- * Date: 2019/11/11
- * Time: 20:01
- */
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Admin;
+use Illuminate\Http\Request;
 use App\Http\Resources\AdminResource;
 
 class AdminController extends Controller
@@ -16,5 +12,70 @@ class AdminController extends Controller
     public function me()
     {
         return new AdminResource(auth()->user());
+    }
+
+    /**
+     * admins paginate.
+     * @param Request $request
+     * @param Admin   $admin
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(Request $request, Admin $admin)
+    {
+        return AdminResource::collection($admin->paginate());
+    }
+
+    /**
+     * 新增管理员
+     * @param Request $request
+     * @param Admin   $admin
+     * @return AdminResource
+     */
+    public function store(Request $request, Admin $admin)
+    {
+        $this->validateRequest($request);
+        $admin->fill($request->all());
+        $admin->password = bcrypt($request->get('password'));
+        $admin->save();
+
+        return new AdminResource($admin);
+    }
+
+    /**
+     * 查看
+     * @param Admin $admin
+     * @return AdminResource
+     */
+    public function show(Admin $admin)
+    {
+        return new AdminResource($admin);
+    }
+
+    /**
+     * 更新
+     * @param Request $request
+     * @param Admin   $admin
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function update(Request $request, Admin $admin)
+    {
+        $this->validateRequest($request, 'update');
+
+        $admin->fill($request->all());
+        if(!empty($request->get('password'))) {
+            $admin->password = bcrypt($request->get('password'));
+        }
+        $admin->save();
+        return $this->noContent();
+    }
+
+    /**
+     * 删除
+     * @param Admin $admin
+     * @throws \Exception
+     */
+    public function destroy(Admin $admin)
+    {
+        $admin->delete();
     }
 }

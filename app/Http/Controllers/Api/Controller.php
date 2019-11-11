@@ -48,4 +48,9 @@ class Controller extends BaseController
         }
         return call_user_func([new $class, $method]);
     }
+
+    public function WithPage()
+    {
+        return app(Request::class)->get('page',1);
+    }
 }
