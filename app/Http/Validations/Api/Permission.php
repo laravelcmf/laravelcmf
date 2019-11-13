@@ -29,8 +29,8 @@ class Permission
                 'name.unique'                 => '名称已经被使用',
                 'route.max'                   => '路由长度不能超过256个字符',
                 'permission_group_id.integer' => '权限分组必须为整型',
-                'sort.integer'                => 'sort必须为整型',
-                'status.integer'              => 'status必须为整型',
+                'sort.integer'                => '排序必须为整型',
+                'status.integer'              => '状态必须为整型',
             ]
         ];
     }
@@ -55,8 +55,8 @@ class Permission
                 'name.unique'                 => '名称已经被使用',
                 'route.max'                   => '路由长度不能超过256个字符',
                 'permission_group_id.integer' => '权限分组必须为整型',
-                'sort.integer'                => 'sort必须为整型',
-                'status.integer'              => 'status必须为整型',
+                'sort.integer'                => '排序必须为整型',
+                'status.integer'              => '状态必须为整型',
             ]
         ];
     }

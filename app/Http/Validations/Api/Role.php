@@ -8,7 +8,6 @@
 
 namespace App\Http\Validations\Api;
 
-
 class Role
 {
     public function store()
