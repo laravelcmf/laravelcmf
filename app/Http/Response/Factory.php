@@ -2,14 +2,37 @@
 
 namespace App\Http\Response;
 
+use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 trait Factory
 {
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function noContent()
     {
-        return response('', 204);
+        return response('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * 201
+     * @param string $content
+     * @return Response
+     */
+    protected function created($content = null)
+    {
+        return new Response($content, Response::HTTP_CREATED);
+    }
+
+    /**
+     * 202
+     * @return Response
+     */
+    protected function accepted()
+    {
+        return new Response('', Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -32,7 +55,7 @@ trait Factory
      */
     public function errorNotFound($message = 'Not Found')
     {
-        $this->error($message, 404);
+        $this->error($message, Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -43,7 +66,7 @@ trait Factory
      */
     public function errorBadRequest($message = 'Bad Request')
     {
-        $this->error($message, 400);
+        $this->error($message, Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -54,7 +77,7 @@ trait Factory
      */
     public function errorForbidden($message = 'Forbidden')
     {
-        $this->error($message, 403);
+        $this->error($message, Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -65,7 +88,7 @@ trait Factory
      */
     public function errorInternal($message = 'Internal Error')
     {
-        $this->error($message, 500);
+        $this->error($message, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -76,7 +99,7 @@ trait Factory
      */
     public function errorUnauthorized($message = 'Unauthorized')
     {
-        $this->error($message, 401);
+        $this->error($message, Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -87,6 +110,14 @@ trait Factory
      */
     public function errorMethodNotAllowed($message = 'Method Not Allowed')
     {
-        $this->error($message, 405);
+        $this->error($message, Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * @param string $message
+     */
+    protected function unprocesableEtity($message = '422 Unprocessable Entity')
+    {
+        $this->error($message, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

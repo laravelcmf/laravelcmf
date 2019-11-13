@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Models\PermissionGroup;
 use App\Http\Resources\PermissionGroupResource;
@@ -10,15 +11,16 @@ class PermissionGroupController extends Controller
 {
 
     /**
-     * paginate.
      * @param Request         $request
      * @param PermissionGroup $permissionGroup
-     * @return PermissionGroupResource
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request, PermissionGroup $permissionGroup)
     {
-        $permissionGroups = $permissionGroup->where('name',$request->get('name'))->paginate();
-        return new PermissionGroupResource($permissionGroups);
+        $permissionGroups = tap($permissionGroup::query(), function($query) {
+            $query->where(request_intersect(['name']));
+        })->paginate();
+        return PermissionGroupResource::collection($permissionGroups);
     }
 
     /**
@@ -26,45 +28,62 @@ class PermissionGroupController extends Controller
      * @param PermissionGroup $permissionGroup
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function all(Request $request,PermissionGroup $permissionGroup)
+    public function all(Request $request, PermissionGroup $permissionGroup)
     {
-        $permissionGroups = $permissionGroup->get();
+        $permissionGroups = tap($permissionGroup::query(),function ($query) {
+            $query->where(request_intersect(['name']));
+        })->get();
         return PermissionGroupResource::collection($permissionGroups);
     }
 
-    public function store(Request $request)
+
+    /**
+     * @param Request         $request
+     * @param PermissionGroup $permissionGroup
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, PermissionGroup $permissionGroup)
     {
-        //
+        $this->validateRequest($request);
+        $permissionGroup->fill($request->all());
+        $permissionGroup->save();
+        return $this->created($permissionGroup);
     }
 
     /**
-     * Display the specified resource.
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param PermissionGroup $permissionGroup
+     * @return PermissionGroupResource
      */
-    public function show($id)
+    public function show(PermissionGroup $permissionGroup)
     {
-        //
+        return new PermissionGroupResource($permissionGroup);
+    }
+
+
+    /**
+     * @param Request         $request
+     * @param PermissionGroup $permissionGroup
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function update(Request $request, PermissionGroup $permissionGroup)
+    {
+        $this->validateRequest($request, 'store');
+        $permissionGroup->fill($request->all());
+        $permissionGroup->save();
+        return $this->noContent();
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
-     * @return \Illuminate\Http\Response
+     * @param PermissionGroup $permissionGroup
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function destroy(PermissionGroup $permissionGroup)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if (Permission::query()->where('permission_group_id', $permissionGroup->id)->count()) {
+            $this->unprocesableEtity();
+        }
+        $permissionGroup->delete();
+        return $this->noContent();
     }
 }

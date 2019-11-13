@@ -8,7 +8,7 @@
 
 namespace App\Http\Validations\Api;
 
-class AdminValidation
+class Admin
 {
     public function store()
     {

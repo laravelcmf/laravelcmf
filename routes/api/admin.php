@@ -6,7 +6,7 @@
  * Time: 19:59
  */
 
-Route::namespace('Api')->prefix('admins')->middleware('auth:api')->group(function() {
-    Route::get('me', 'AdminController@me')->name('admin.me');
-    Route::apiResource('', 'AdminController');
+Route::namespace('Api')->middleware('auth:api')->group(function() {
+    Route::get('admins/me', 'AdminController@me')->name('admin.me');
+    Route::apiResource('admins', 'AdminController');
 });

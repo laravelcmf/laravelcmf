@@ -8,7 +8,7 @@
 
 namespace App\Http\Validations\Api;
 
-class AuthValidation
+class Auth
 {
     public function login()
     {
