@@ -24,6 +24,7 @@ class CreateMenusTable extends Migration
             $table->unsignedTinyInteger('hidden')->default(0)->comment('隐藏菜单: 0:不隐藏, 1:隐藏');
             $table->timestamps();
         });
+        \Illuminate\Support\Facades\DB::statement("alter table `menus` comment '菜单'");
     }
 
     /**
