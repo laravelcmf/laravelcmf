@@ -14,7 +14,6 @@
         "laravel/framework": "^6.2",
         "laravel/passport": "^8.0",
         "laravel/tinker": "^1.0",
-        "spatie/laravel-permission": "^3.2",
         "spatie/laravel-query-builder": "^2.3"
     },
     "require-dev": {
