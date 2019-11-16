@@ -14,9 +14,8 @@ class CreateMenusTable extends Migration
     {
         Schema::create('menus', function(Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('parent_id')->nullable()->comment('父级ID');
+            $table->unsignedInteger('parent_id')->nullable()->comment('父级ID');
             $table->string('parent_path')->nullable()->comment('父级路径');
-            $table->uuid('record_id')->comment('记录ID');
             $table->string('name')->comment('菜单名称');
             $table->unsignedInteger('sequence')->default(10000)->comment('排序值');
             $table->string('icon')->nullable()->comment('图标');

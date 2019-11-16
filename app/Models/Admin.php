@@ -9,7 +9,6 @@
 namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -56,7 +55,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Admin extends Authenticatable
 {
-    use HasRoles,Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens;
 
     /**
      * @var array

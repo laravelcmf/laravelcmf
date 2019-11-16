@@ -24,6 +24,7 @@ class CreateAdminsTable extends Migration
             $table->unsignedTinyInteger('status')->default(1)->comment('状态，1正常 2禁止 3删除');
             $table->timestamps();
         });
+        \Illuminate\Support\Facades\DB::statement("alter table `admins` comment '后台用户'");
     }
 
     /**
