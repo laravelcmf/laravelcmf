@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class MenuAction extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'code',
+        'menu_id'
+    ];
 }
