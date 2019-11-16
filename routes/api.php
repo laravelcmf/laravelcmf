@@ -13,4 +13,3 @@
 foreach (glob(app()->basePath('routes/api/*.php')) as $filename) {
     include $filename;
 }
-
