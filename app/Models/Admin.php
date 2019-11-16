@@ -90,4 +90,13 @@ class Admin extends Authenticatable
             $credentials['name'] = $username;
         return self::where($credentials)->first();
     }
+
+    /**
+     * 用户和角色多对多关联
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
 }

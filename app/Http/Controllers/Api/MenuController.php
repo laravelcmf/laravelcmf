@@ -9,26 +9,19 @@ use Illuminate\Http\Request;
 class MenuController extends Controller
 {
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(Request $request)
+    public function index()
     {
-        $menus = Menu::query()->orderBy('sort', 'desc')->get();
-        return response()->json(['data' => make_tree($menus->toArray())]);
+        $menus = tap(Menu::query(), function($query) {
+            $query->where(request_intersect(['name','hidden']));
+        })->orderBy('sequence', 'desc')->paginate();
+        return MenuResource::collection($menus);
     }
 
     public function userMenu()
     {
-        $userPermissions = \Auth::user()->getAllPermissions()->pluck('name');
-        $menus = Menu::query()
-            ->orderBy('sort', 'desc')
-            ->get()
-            ->filter(function ($item) use ($userPermissions) {
-                return !$item->permission_name || $userPermissions->contains($item->permission_name);
-            });
-
-        return response()->json(['data' => make_tree($menus->toArray())]);
+        //Todo
     }
 
     public function store(Request $request, Menu $menu)
