@@ -2,10 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Traits\MysqlStructure;
 use Illuminate\Console\Command;
 
 class CrudGenerator extends Command
 {
+    use MysqlStructure;
+
+    private $db;
+
     /**
      * The name and signature of the console command.
      *
@@ -20,6 +25,12 @@ class CrudGenerator extends Command
      * @var string
      */
     protected $description = 'Create Api operations';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->db = env('DB_DATABASE');
+    }
 
     protected function getStub($type)
     {
@@ -82,12 +93,14 @@ class CrudGenerator extends Command
      */
     public function handle()
     {
-        $name = $this->argument('name');
+        $this->exportAllTables();
 
+        $name = $this->argument('name');
         $this->controller($name);
         $this->model($name);
         $this->validation($name);
 
         \File::append(base_path('routes/api.php'), 'Route::resource(\'' . strtolower($name) . "', '{$name}Controller');");
     }
+
 }
