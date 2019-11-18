@@ -11,6 +11,7 @@ class PermissionGroupController extends Controller
 {
 
     /**
+     * get PermissionGroup paginate
      * @param Request         $request
      * @param PermissionGroup $permissionGroup
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection

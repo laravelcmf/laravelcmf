@@ -1,36 +1,34 @@
 <?php
 
-namespace DummyNamespace;
+namespace {{DummyNamespace}};
 
-class DummyClass
+class {{DummyClass}}
 {
     /**
      * @return array
      */
     public function store()
     {
+        /**
+         * 新增验证规则
+         */
         return [
-                    'rules' => [
-                        //
-                    ],
+            'rules'=> {{storeRules}},
 
-                    'messages' => [
-                       //
-                    ]
-                ];
-            }
+            'messgaes'=> {{storeMessages}}
+        ];
+     }
 
 
-            public function update()
-            {
-                return [
-                    //
-                    ],
+    /**
+     * 编辑验证规则
+     */
+    public function update()
+    {
+        return [
+           'rules'=> {{updateRules}},
 
-                    'messages' => [
-                        //
-                    ]
-                ];
-            }
+           'messgaes'=> {{updateMessages}}
+        ];
     }
 }

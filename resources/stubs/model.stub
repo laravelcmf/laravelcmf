@@ -1,8 +1,7 @@
 <?php
-
-namespace App;
+namespace {{DummyNamespace}};
 
 class {{modelName}} extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = {{fields}};
 }
