@@ -113,15 +113,15 @@ class MenuController extends Controller
     }
 
     /**
+     * 删除
      * @param Menu $menu
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
     public function destroy(Menu $menu)
     {
-        if(Menu::query()->where('parent_id', $menu->id)->count()) {
-            $this->unprocesableEtity();
-        }
+        $menu->actions()->delete();
+        $menu->resources()->delete();
         $menu->delete();
         return $this->noContent();
     }
