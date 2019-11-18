@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use App\Traits\GeneratorTemplate;
 use Symfony\Component\Console\Exception\RuntimeException;
 
-class CrudGenerator extends Command
+class ApiGenerator extends Command
 {
     use MysqlStructure, GeneratorTemplate;
 
