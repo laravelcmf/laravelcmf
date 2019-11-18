@@ -14,25 +14,28 @@ class Menu
     {
         return [
             'rules' => [
-                'name'      => 'required|max:64',
-                'parent_id' => 'required|numeric',
-                'path'      => 'nullable|max:128',
+                'name'      => 'required|between:2,64|unique:menus,name,' . request()->route('menu.id'),
+                'parent_id' => 'required|integer',
                 'icon'      => 'nullable|max:50',
-                'is_link'   => 'in:0,1',
-                'sort'      => 'nullable|integer',
-                'status'    => 'nullable|integer',
+                'router'    => 'nullable|max:128',
+                'sequence'  => 'nullable|integer',
+                'hidden'    => 'nullable|integer',
+                'actions'   => 'nullable|json',
+                'resources' => 'resources|json',
             ],
 
             'messages' => [
-                'name.required'                => '名称不能为空',
-                'name.max'                     => '名称最大长度不能超过64字符',
-                'permission_group_id.required' => '父级菜单不能为空',
-                'permission_group_id.numeric'  => '父级菜单为整数',
-                'path.max'                     => '路径最大不能超过128字符',
-                'icon.max'                     => '图标最大不能超过50字符',
-                'is_link.in'                   => 'is_link只能为 0和1',
-                'sort.integer'                 => '排序必须为整型',
-                'status.integer'               => '状态必须为整型',
+                'name.required'      => '名称不能为空',
+                'name.between'       => '名称必须介于 2 - 64 个字符之间。',
+                'name.unique'        => '名称已被占用，请重新填写',
+                'icon.max'           => '图标最大不能超过50字符',
+                'parent_id.required' => '父级菜单不能为空',
+                'parent_id.integer'  => '父级菜单必须为整数',
+                'router.max'         => '路由最大长度不能超过128字符',
+                'sequence.integer'   => '排序必须为整型',
+                'hidden.integer'     => '状态必须为整型',
+                'actions.json'       => '菜单动作必须为合法的json',
+                'resources.json'     => '菜单资源必须为合法的json',
             ]
         ];
     }
