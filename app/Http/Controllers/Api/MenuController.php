@@ -10,7 +10,9 @@ use App\Http\Resources\MenuResource as MenuApiResource;
 
 class MenuController extends Controller
 {
+
     /**
+     * 分页
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
@@ -25,6 +27,7 @@ class MenuController extends Controller
     {
         //Todo
     }
+
 
     /**
      * 新增
@@ -54,6 +57,12 @@ class MenuController extends Controller
         return new MenuApiResource($menu);
     }
 
+
+    /**
+     * 查看
+     * @param Menu $menu
+     * @return MenuApiResource
+     */
     public function show(Menu $menu)
     {
         return new MenuApiResource($menu);
@@ -111,6 +120,7 @@ class MenuController extends Controller
         }
         return $this->noContent();
     }
+
 
     /**
      * 删除
