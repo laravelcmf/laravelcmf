@@ -76,6 +76,7 @@ class RoleController extends Controller
         if($menus = $request->get('menus')) {
             $collection = collect($menus);
             $collection->transform(function($item, $key) {
+                //FIXME:这里 actions resources 内容可以查询合法性，后续完善。。。
                 $actions = Arr::get($item,'actions',[]);
                 $resources = Arr::get($item,'resources',[]);
                 $actions = json_encode($actions);
