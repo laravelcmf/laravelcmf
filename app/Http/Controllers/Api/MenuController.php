@@ -25,7 +25,7 @@ class MenuController extends Controller
 
     public function userMenu()
     {
-        //Todo
+
     }
 
 

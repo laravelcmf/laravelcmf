@@ -54,6 +54,6 @@ class Role extends Model
      */
     public function menus()
     {
-        return $this->belongsToMany(Menu::class)->withTimestamps();
+        return $this->belongsToMany(Menu::class,'role_menus')->withTimestamps();
     }
 }

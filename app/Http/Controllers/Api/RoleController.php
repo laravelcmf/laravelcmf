@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use App\Http\Resources\RoleResource;
+use Illuminate\Support\Arr;
 
 class RoleController extends Controller
 {
@@ -17,15 +18,6 @@ class RoleController extends Controller
         return RoleResource::collection($roles);
     }
 
-    /**
-     * @param $guardName
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function guardNameRoles($guardName)
-    {
-        $roles = Role::query()->where('guard_name', $guardName)->get();
-        return RoleResource::collection($roles);
-    }
 
     /**
      * @param Request $request
@@ -34,11 +26,12 @@ class RoleController extends Controller
      */
     public function store(Request $request, Role $role)
     {
-        $this->validateRequest($request);
+        $this->validateRequest($request, 'store');
         $role->fill($request->all());
         $role->save();
         return new RoleResource($role);
     }
+
 
     /**
      * @param Role $role
@@ -49,6 +42,7 @@ class RoleController extends Controller
         return new RoleResource($role);
     }
 
+
     /**
      * @param Request $request
      * @param Role    $role
@@ -56,19 +50,10 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        $this->validateRequest($request, 'store');
+        $this->validateRequest($request, 'update');
         $role->fill($request->all());
         $role->save();
         return $this->noContent();
-    }
-
-    /**
-     * @param Role $role
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function permissions(Role $role)
-    {
-        return RoleResource::collection($role->with('permissions'));
     }
 
     /**
@@ -85,11 +70,23 @@ class RoleController extends Controller
     /**
      * @param Request $request
      * @param Role    $role
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function assignPermissions(Request $request, Role $role)
+    public function assignMenus(Request $request, Role $role)
     {
-        $role->syncPermissions($request->get('permissions', []));
-        return $this->noContent();
+        if($menus = $request->get('menus')) {
+            $collection = collect($menus);
+            $collection->transform(function($item, $key) {
+                $actions = Arr::get($item,'actions',[]);
+                $resources = Arr::get($item,'resources',[]);
+                $actions = json_encode($actions);
+                $resources = json_encode($resources);
+                $item['action'] = $actions;
+                $item['resource'] = $resources;
+                unset($item['actions']);
+                unset($item['resources']);
+                return $item;
+            });
+            $role->menus()->sync($collection->all());
+        }
     }
 }

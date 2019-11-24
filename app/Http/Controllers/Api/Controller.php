@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Response\Factory;
 use App\Http\Controllers\Controller as BaseController;
@@ -18,6 +19,10 @@ class Controller extends BaseController
 
     protected $reservedWords = ['page', 'per_page', 'filters'];
 
+    /**
+     * @param array $params
+     * @return array
+     */
     protected function ignoreReserved(array $params)
     {
         foreach($this->reservedWords as $reservedKey) {
@@ -28,29 +33,46 @@ class Controller extends BaseController
         return $params;
     }
 
+    /**
+     * 获取验证规则检验
+     * @param Request     $request
+     * @param string|null $name
+     * @throws \Illuminate\Validation\ValidationException
+     */
     protected function validateRequest(Request $request, string $name = null)
     {
         if(!$validator = $this->getValidator($request, $name)) {
             return;
         }
-        $rules = array_get($validator, 'rules', []);
-        $messages = array_get($validator, 'messages', []);
+        $rules = Arr::get($validator,'rules',[]);
+        $messages= Arr::get($validator,'messages',[]);
         $this->validate($request, $rules, $messages);
     }
 
+    /**
+     * 获取规则文件
+     * @param Request     $request
+     * @param string|null $name
+     * @return bool|mixed
+     */
     private function getValidator(Request $request, string $name = null)
     {
-        list($controller, $method) = explode('@', $request->route()->action['uses']);
+        list($controller, $method) = explode('@', $request->route()->getActionName());
         $method = $name ?: $method;
-        $class = str_replace('Controller', '', $controller);
+        $className = substr(strrchr($controller, '\\'), 1);
+        $class = "App\\Http\\Validations\\Api\\" . str_replace('Controller', '', $className);
         if(!class_exists($class) || !method_exists($class, $method)) {
             return false;
         }
         return call_user_func([new $class, $method]);
     }
 
+    /**
+     * with page default 1
+     * @return mixed
+     */
     public function WithPage()
     {
-        return app(Request::class)->get('page',1);
+        return app(Request::class)->get('page', 1);
     }
 }
