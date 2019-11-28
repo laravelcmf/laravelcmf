@@ -71,7 +71,7 @@ class RoleController extends Controller
      * @param Request $request
      * @param Role    $role
      */
-    public function assignMenus(Request $request, Role $role)
+    public function syncPermissions(Request $request, Role $role)
     {
         if($menus = $request->get('menus')) {
             $collection = collect($menus);

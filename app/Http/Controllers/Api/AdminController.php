@@ -56,6 +56,7 @@ class AdminController extends Controller
      * @param Request $request
      * @param Admin   $admin
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Admin $admin)
     {
@@ -70,12 +71,26 @@ class AdminController extends Controller
     }
 
     /**
-     * 删除
+     *  删除
      * @param Admin $admin
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
     public function destroy(Admin $admin)
     {
         $admin->delete();
+        return $this->noContent();
+    }
+
+    /**
+     *  删除
+     * @param Request $request
+     * @param Admin   $admin
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function AccessRoles(Request $request,Admin $admin)
+    {
+        $admin->roles()->sync($request->get('role_ids'));
+        return $this->noContent();
     }
 }

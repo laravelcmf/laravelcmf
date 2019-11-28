@@ -8,6 +8,6 @@
 
 //角色
 Route::namespace('Api')->middleware('auth:api')->group(function() {
-    Route::patch("roles/{role}/assign_menus",'RoleController@assignMenus')->name('roles.assign_menus');
+    Route::patch("roles/{role}/sync_permissions",'RoleController@syncPermissions')->name('roles.sync_permissions');
     Route::apiResource('roles', 'RoleController');
 });
