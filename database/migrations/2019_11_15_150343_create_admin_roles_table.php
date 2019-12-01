@@ -8,14 +8,13 @@ class CreateAdminRolesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
      * @return void
      */
     public function up()
     {
-        Schema::create('admin_roles', function (Blueprint $table) {
+        Schema::create('admin_roles', function(Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('user_id')->index()->comment('用户ID');
+            $table->unsignedInteger('admin_id')->index()->comment('后台用户ID');
             $table->unsignedInteger('role_id')->index()->comment('角色ID');
             $table->timestamps();
         });
@@ -24,7 +23,6 @@ class CreateAdminRolesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
      * @return void
      */
     public function down()

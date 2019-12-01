@@ -9,4 +9,5 @@
 Route::namespace('Api')->middleware('auth:api')->group(function() {
     Route::get('admins/me', 'AdminController@me')->name('admin.me');
     Route::apiResource('admins', 'AdminController');
+    Route::post('admins/{admin}/access_roles', 'AdminController@AccessRoles')->name('admins.access_roles');
 });
