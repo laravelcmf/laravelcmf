@@ -80,6 +80,7 @@ class MenuController extends Controller
     {
         $this->validateRequest($request, 'store');
         $this->validateRequest($request);
+
         $menu->fill($request->all());
         $menu->save();
         if($actions = $request->get('actions')) {

@@ -40,12 +40,12 @@ class Role extends Model
     ];
 
     /**
-     * 角色用户多对多关联
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * 角色用户一对多关联
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function admins()
     {
-        return $this->belongsToMany(Admin::class)->withTimestamps();
+        return $this->hasMany(Admin::class);
     }
 
     /**

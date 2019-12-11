@@ -42,7 +42,7 @@ class Permission
                 'name'                => [
                     'nullable',
                     'between:1,20',
-                    Rule::unique('permissions')->ignore(request()->route('permission.id'))
+                    Rule::unique('permissions')->ignore(request()->route('Permission.id'))
                 ],
                 'route'               => 'nullable|max:256',
                 'permission_group_id' => 'nullable|integer',
