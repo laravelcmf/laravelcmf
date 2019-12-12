@@ -8,8 +8,8 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
+use App\Models\Traits\HasPermission;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -50,8 +50,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Admin extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
 
+    use Notifiable, HasApiTokens,HasPermission;
     /**
      * @var array
      */
@@ -98,7 +98,7 @@ class Admin extends Authenticatable
     // 获取所有已定义的角色的集合
     public function getRole()
     {
-        return $this->role;
+        return auth()->user()->role;
     }
 
     // 返回所有用户通过赋予角色所继承的权限
@@ -106,7 +106,9 @@ class Admin extends Authenticatable
     {
         $role = $this->getRole();
         if($role && in_array($role->id, config('permission.administrator_ids'))) {
-            return 
+            $menus = Menu::all();
+            return $menus
+                ;
         }
     }
 

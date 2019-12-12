@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Resources\AdminResource;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     //管理员信息
     public function me()
     {
-        return new AdminResource(auth()->user());
+        dd(Auth::user()->checkPermission("",""));
+//        return new AdminResource(auth()->user());
     }
 
     /**

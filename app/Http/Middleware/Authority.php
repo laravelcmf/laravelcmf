@@ -16,7 +16,6 @@ class Authority
      */
     public function handle($request, Closure $next)
     {
-        dd( Auth::user()->getPermissions());
         if (Auth::check() && Auth::user()) {
             return $next($request);
         }
