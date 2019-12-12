@@ -12,7 +12,7 @@ class AdminController extends Controller
     //管理员信息
     public function me()
     {
-        dd(Auth::user()->checkPermission("",""));
+        dd(Auth::user()->checkPermission("GET","admin"));
 //        return new AdminResource(auth()->user());
     }
 

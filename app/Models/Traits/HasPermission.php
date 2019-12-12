@@ -18,15 +18,16 @@ trait HasPermission
         //获取用户角色验证权限.
         $user = Auth::user();
         $role = $user->getRole();
-//        if($role && in_array($role->id, config('permission.role_id'))) {
-//            return true;
-//        }
-        $collection = collect($role->menus);
-        $collection->map(function ($menu){
-            dd($menu->resources);
-        });
-
+        if($role && in_array($role->id, config('permission.role_id'))) {
+            return true;
+        }
+        foreach($role->menus as $menu) {
+            foreach($menu->resources as $resource) {
+                if($resource->method == $method && $resource->path == $route) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
-
 }
