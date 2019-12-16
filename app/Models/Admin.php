@@ -15,25 +15,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * App\Models\Admin
- *
- * @property int $id
- * @property string $name 用户名
- * @property string $email 邮箱
- * @property string $password 密码
- * @property string|null $portrait 头像
- * @property int $login_count 登录次数
- * @property string $last_login_ip 最后登录IP
- * @property int $status 状态，1正常 2禁止 3删除
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $role_id 角色ID
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
- * @property-read int|null $clients_count
+ * @property int                                                                                                            $id
+ * @property string                                                                                                         $name          用户名
+ * @property string                                                                                                         $email         邮箱
+ * @property string                                                                                                         $password      密码
+ * @property string|null                                                                                                    $portrait      头像
+ * @property int                                                                                                            $login_count   登录次数
+ * @property string                                                                                                         $last_login_ip 最后登录IP
+ * @property int                                                                                                            $status        状态，1正常 2禁止 3删除
+ * @property \Illuminate\Support\Carbon|null                                                                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
+ * @property int|null                                                                                                       $role_id       角色ID
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[]                                       $clients
+ * @property-read int|null                                                                                                  $clients_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read int|null $notifications_count
- * @property-read \App\Models\Role|null $role
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
- * @property-read int|null $tokens_count
+ * @property-read int|null                                                                                                  $notifications_count
+ * @property-read \App\Models\Role|null                                                                                     $role
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[]                                        $tokens
+ * @property-read int|null                                                                                                  $tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Admin newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Admin newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Admin query()
@@ -62,6 +61,7 @@ class Admin extends Authenticatable
         'email',
         'password',
         'portrait',
+        'role_id',
         'login_count',
         'last_login_ip',
         'status',
@@ -100,6 +100,41 @@ class Admin extends Authenticatable
     // 获取所有已定义的角色的集合
     public function getRole()
     {
-        return auth()->user()->role;
+        return $this->role;
+    }
+
+    /**
+     * 获取菜单列表
+     * @return mixed
+     */
+    public function getMenus()
+    {
+        $role = $this->getRole();
+        if($role && in_array($role->id, config('permission.role_id'))) {
+            $menus = Menu::where('parent_id', '=', null)->with('children')->get();
+            $this->tree($menus);
+            return $menus;
+        }
+        if($role) {
+            $menus = $role->menus()->with('children')->where('parent_id', '=', null)->get();
+            $this->tree($menus);
+            return $menus;
+        }
+    }
+
+    /**
+     * @param $menus
+     */
+    private function tree($menus): void
+    {
+        $menus->transform(function($menu) {
+            $menu->actions;
+            $menu->resources;
+            if($menu->children) {
+                $this->tree($menu->children);
+            }
+            unset($menu->pivot);
+            return $menu;
+        });
     }
 }

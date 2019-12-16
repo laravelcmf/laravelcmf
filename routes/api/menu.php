@@ -7,6 +7,6 @@
  */
 
 //菜单
-Route::namespace('Api')->middleware('auth:api')->group(function() {
+Route::namespace('Api')->middleware(['auth:api', 'ability'])->group(function() {
     Route::apiResource('menus', 'MenuController');
 });

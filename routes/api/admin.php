@@ -8,6 +8,6 @@
 
 Route::namespace('Api')->middleware(['auth:api','ability'])->group(function() {
     Route::get('admins/me', 'AdminController@me')->name('admin.me');
+    Route::get('admins/menus','AdminController@getMenus')->name('admin.menus');
     Route::apiResource('admins', 'AdminController');
-    Route::post('admins/{admin}/access_roles', 'AdminController@AccessRoles')->name('admins.access_roles');
 });

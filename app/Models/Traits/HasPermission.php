@@ -21,6 +21,9 @@ trait HasPermission
         if($role && in_array($role->id, config('permission.role_id'))) {
             return true;
         }
+        if(!$role) {
+            return false;
+        }
         foreach($role->menus as $menu) {
             foreach($menu->resources as $resource) {
                 if($resource->method == $method && $resource->path == $route) {
@@ -28,6 +31,5 @@ trait HasPermission
                 }
             }
         }
-        return false;
     }
 }

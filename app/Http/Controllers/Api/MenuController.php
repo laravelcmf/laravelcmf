@@ -23,12 +23,6 @@ class MenuController extends Controller
         return MenuApiResource::collection($menus);
     }
 
-    public function userMenu()
-    {
-
-    }
-
-
     /**
      * 新增
      * @param Request $request

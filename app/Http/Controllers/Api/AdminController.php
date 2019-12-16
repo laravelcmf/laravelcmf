@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Admin;
+use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Resources\AdminResource;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     //管理员信息
     public function me()
     {
-        dd(Auth::user()->checkPermission("GET","admin"));
-//        return new AdminResource(auth()->user());
+        return new AdminResource(auth()->user());
     }
 
     /**
@@ -32,6 +32,7 @@ class AdminController extends Controller
      * @param Request $request
      * @param Admin   $admin
      * @return AdminResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Admin $admin)
     {
@@ -84,15 +85,10 @@ class AdminController extends Controller
         return $this->noContent();
     }
 
-    /**
-     *  删除
-     * @param Request $request
-     * @param Admin   $admin
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     */
-    public function AccessRoles(Request $request,Admin $admin)
+    //获取我的菜单列表
+    public function getMenus()
     {
-        $admin->roles()->sync($request->get('role_ids'));
-        return $this->noContent();
+        $menus = \Auth::user()->getMenus();
+        return response()->json($menus);
     }
 }
