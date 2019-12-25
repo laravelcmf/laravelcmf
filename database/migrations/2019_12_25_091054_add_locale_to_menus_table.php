@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRoleIdToAdminsTable extends Migration
+class AddLocaleToMenusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddRoleIdToAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::table('admins', function (Blueprint $table) {
-            $table->integer('role_id')->nullable()->default(null)->comment('角色ID');
+        Schema::table('menus', function (Blueprint $table) {
+            $table->string('locale')->nullable()->comment('语言包配置');
         });
     }
 
@@ -25,8 +25,8 @@ class AddRoleIdToAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::table('admins', function (Blueprint $table) {
-            $table->dropColumn('role_id');
+        Schema::table('menus', function (Blueprint $table) {
+            $table->dropColumn('locale');
         });
     }
 }

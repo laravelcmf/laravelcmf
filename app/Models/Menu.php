@@ -8,9 +8,10 @@ namespace App\Models;
  * @property int|null                                                                 $parent_id   父级ID
  * @property string|null                                                              $parent_path 父级路径
  * @property string                                                                   $name        菜单名称
+ * @property string                                                                   $locale      语言包配置
  * @property int                                                                      $sequence    排序值
  * @property string|null                                                              $icon        图标
- * @property string|null                                                              $router      访问路由
+ * @property string|null                                                              $path        访问路由
  * @property int                                                                      $hidden      隐藏菜单: 0:不隐藏, 1:隐藏
  * @property \Illuminate\Support\Carbon|null                                          $created_at
  * @property \Illuminate\Support\Carbon|null                                          $updated_at
@@ -46,9 +47,10 @@ class Menu extends Model
         'parent_id',
         'parent_path',
         'name',
+        'locale',
         'sequence',
         'icon',
-        'router',
+        'path',
         'hidden'
     ];
 
