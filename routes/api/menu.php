@@ -8,5 +8,6 @@
 
 //菜单
 Route::namespace('Api')->middleware(['auth:api', 'ability'])->group(function() {
+    Route::get('menus/tree', 'MenuController@tree')->name('menus.tree');
     Route::apiResource('menus', 'MenuController');
 });

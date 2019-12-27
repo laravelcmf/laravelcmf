@@ -13,39 +13,51 @@ class MenuController extends Controller
 
     /**
      * 分页
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
         $menus = tap(Menu::query(), function($query) {
-            $query->where(request_intersect(['name', 'hidden']));
-        })->orderBy('sequence', 'desc')->paginate();
+            $query->where(request_intersect(['hidden', 'parent_id']));
+        })->where('name','like','%'.$request->get('name').'%')->orderBy('sequence', 'asc')->paginate($request->get('per_page'));
         return MenuApiResource::collection($menus);
     }
 
     /**
-     * 新增
+     * tree
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function tree()
+    {
+        $menus = tap(Menu::query(), function($query) {
+            $query->where(request_intersect(['name', 'hidden']));
+        })->where('parent_id', '=', null)->with('children')->orderBy('sequence', 'asc')->get();
+        return MenuApiResource::collection($menus);
+    }
+
+    /**
+     *  新增
      * @param Request $request
      * @param Menu    $menu
      * @return MenuApiResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Menu $menu)
     {
         $this->validateRequest($request);
         $menu->fill($request->all());
         $menu->save();
+        // 菜单动作
         if($actions = $request->get('actions')) {
-            collect($actions)->map(function($item) use ($menu) {
-                if($menu->actions()->where('code', $item['code'])->count() == 0) {
-                    $menu->actions()->create($item);
-                }
+            collect($actions)->unique('code')->map(function($item) use ($menu) {
+                $menu->actions()->create($item);
             });
         }
+        // 菜单资源
         if($resources = $request->get('resources')) {
-            collect($resources)->map(function($item) use ($menu) {
-                if($menu->resources()->where('code', $item['code'])->count() == 0) {
-                    $menu->resources()->create($item);
-                }
+            collect($actions)->unique('code')->map(function($item) use ($menu) {
+                $menu->resources()->create($item);
             });
         }
         return new MenuApiResource($menu);
@@ -59,6 +71,7 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
+        $menu = Menu::query()->where("id", $menu->id)->with('actions', 'resources')->first();
         return new MenuApiResource($menu);
     }
 
@@ -67,53 +80,56 @@ class MenuController extends Controller
      * 更新
      * @param Request $request
      * @param Menu    $menu
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     * @throws \Exception
+     * @return MenuApiResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Menu $menu)
     {
         $this->validateRequest($request, 'store');
-        $this->validateRequest($request);
 
         $menu->fill($request->all());
         $menu->save();
+        // 菜单动作
         if($actions = $request->get('actions')) {
-            $actionsCodes = MenuAction::where('menu_id', $menu->id)->get()->pluck('code')->all();
-            $requestCodes = collect($actions)->pluck('code')->all();
-            $codes = collect($actionsCodes)->diff($requestCodes);
-            if(count($codes)) {
-                MenuAction::whereIn('code', $codes)->delete();
+            $actions = collect($actions)->unique('code');
+            $allCodes = MenuAction::where('menu_id', $menu->id)->get()->pluck('code')->all();
+            $requestCodes = $actions->pluck('code')->all();
+            $diffCodes = collect($allCodes)->diff($requestCodes);
+            if(count($diffCodes)) {
+                MenuAction::whereIn('code', $diffCodes)->where('menu_id', $menu->id)->delete();
             }
-            collect($actions)->map(function($item) use ($menu) {
-                if($menuAction = MenuAction::where('code', $item['code'])->first()) {
-                    $menuAction->fill($item);
+            $actions->map(function($action) use ($menu) {
+                if($menuAction = MenuAction::where('code', $action['code'])->where('menu_id', $menu->id)->first()) {
+                    $menuAction->fill($action);
                     $menuAction->save();
                 } else {
-                    $menu->actions()->create($item);
+                    $menu->actions()->create($action);
                 }
             });
         } else {
             $menu->actions()->where('menu_id', $menu->id)->delete();
         }
+        // 菜单资源
         if($resources = $request->get('resources')) {
-            $resourcesCodes = MenuResource::where('menu_id', $menu->id)->get()->pluck('code')->all();
-            $requestCodes = collect($resources)->pluck('code')->all();
-            $codes = collect($resourcesCodes)->diff($requestCodes);
-            if(count($codes)) {
-                MenuResource::whereIn('id', $codes)->delete();
+            $resources = collect($resources)->unique('code');
+            $allCodes = MenuResource::where('menu_id', $menu->id)->get()->pluck('code')->all();
+            $requestCodes = $resources->pluck('code')->all();
+            $diffCodes = collect($allCodes)->diff($requestCodes);
+            if(count($diffCodes)) {
+                MenuResource::whereIn('code', $diffCodes)->where('menu_id', $menu->id)->delete();
             }
-            collect($resources)->map(function($item) use ($menu) {
-                if($menuResource = MenuResource::where('code', $item['code'])->first()) {
-                    $menuResource->fill($item);
-                    $menuResource->save($item);
+            $resources->map(function($resource) use ($menu) {
+                if($menuResource = MenuResource::where('code', $resource['code'])->where('menu_id', $menu->id)->first()) {
+                    $menuResource->fill($resource);
+                    $menuResource->save($resource);
                 } else {
-                    $menu->resources()->create($item);
+                    $menu->resources()->create($resource);
                 }
             });
         } else {
             $menu->resources()->where('menu_id', $menu->id)->delete();
         }
-        return $this->noContent();
+        return new MenuApiResource($menu);
     }
 
 

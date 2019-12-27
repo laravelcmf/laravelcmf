@@ -8,12 +8,14 @@ class MenuResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        $data['actions'] = new MenuActionResource($this->whenLoaded('actions'));
+        $data['resources'] = new MenuResourceResource($this->whenLoaded('resources'));
+        return $data;
     }
 }

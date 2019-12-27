@@ -111,12 +111,12 @@ class Admin extends Authenticatable
     {
         $role = $this->getRole();
         if($role && in_array($role->id, config('permission.role_id'))) {
-            $menus = Menu::where('parent_id', '=', null)->with('children')->get();
+            $menus = Menu::where('parent_id', '=', null)->with('children')->orderBy('sequence', 'asc')->get();
             $this->tree($menus);
             return $menus;
         }
         if($role) {
-            $menus = $role->menus()->with('children')->where('parent_id', '=', null)->get();
+            $menus = $role->menus()->with('children')->where('parent_id', '=', null)->orderBy('sequence', 'asc')->get();
             $this->tree($menus);
             return $menus;
         }
