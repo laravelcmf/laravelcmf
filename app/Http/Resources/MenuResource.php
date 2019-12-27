@@ -14,6 +14,7 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
+        $data['path'] = $data['path'] ? $data['path'] : '';
         $data['actions'] = new MenuActionResource($this->whenLoaded('actions'));
         $data['resources'] = new MenuResourceResource($this->whenLoaded('resources'));
         return $data;
