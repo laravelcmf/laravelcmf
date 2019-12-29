@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\AcceptHeader::class,
             'throttle:60,1',
             'bindings',
+            \App\Http\Middleware\LogLastUserActivity::class,
         ],
     ];
 

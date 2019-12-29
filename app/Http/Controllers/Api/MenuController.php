@@ -20,7 +20,8 @@ class MenuController extends Controller
     {
         $menus = tap(Menu::query(), function($query) {
             $query->where(request_intersect(['hidden', 'parent_id']));
-        })->where('name','like','%'.$request->get('name').'%')->orderBy('sequence', 'asc')->paginate($request->get('per_page'));
+        })->where('name', 'like', '%' . $request->get('name') . '%')->orderBy('sequence',
+            'asc')->paginate($request->get('per_page'));
         return MenuApiResource::collection($menus);
     }
 
@@ -32,8 +33,25 @@ class MenuController extends Controller
     {
         $menus = tap(Menu::query(), function($query) {
             $query->where(request_intersect(['name', 'hidden']));
-        })->where('parent_id', '=', null)->with('children')->orderBy('sequence', 'asc')->get();
+        })->where('parent_id', '=', null)->with('actions','resources','children')->orderBy('sequence', 'asc')->get();
+        $this->treeTransform($menus);
         return MenuApiResource::collection($menus);
+    }
+
+    /**
+     * @param $menus
+     */
+    private function treeTransform($menus): void
+    {
+        $menus->transform(function($menu) {
+            $menu->actions;
+            $menu->resources;
+            if($menu->children) {
+                $this->treeTransform($menu->children);
+            }
+            unset($menu->pivot);
+            return $menu;
+        });
     }
 
     /**
@@ -119,7 +137,8 @@ class MenuController extends Controller
                 MenuResource::whereIn('code', $diffCodes)->where('menu_id', $menu->id)->delete();
             }
             $resources->map(function($resource) use ($menu) {
-                if($menuResource = MenuResource::where('code', $resource['code'])->where('menu_id', $menu->id)->first()) {
+                if($menuResource = MenuResource::where('code', $resource['code'])->where('menu_id',
+                    $menu->id)->first()) {
                     $menuResource->fill($resource);
                     $menuResource->save($resource);
                 } else {

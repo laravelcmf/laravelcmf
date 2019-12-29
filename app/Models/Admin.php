@@ -10,6 +10,7 @@ namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
 use App\Models\Traits\HasPermission;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -86,6 +87,11 @@ class Admin extends Authenticatable
             $credentials['email'] = $username :
             $credentials['name'] = $username;
         return self::where($credentials)->first();
+    }
+
+    public function isOnline()
+    {
+        return Cache::has('user-is-online-' . $this->id);
     }
 
     /**
