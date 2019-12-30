@@ -33,7 +33,7 @@ class MenuController extends Controller
     {
         $menus = tap(Menu::query(), function($query) {
             $query->where(request_intersect(['name', 'hidden']));
-        })->where('parent_id', '=', null)->with('actions','resources','children')->orderBy('sequence', 'asc')->get();
+        })->where('parent_id', '=', null)->with('actions', 'resources', 'children')->orderBy('sequence', 'asc')->get();
         $this->treeTransform($menus);
         return MenuApiResource::collection($menus);
     }
