@@ -8,6 +8,5 @@
 
 //角色
 Route::namespace('Api')->middleware(['auth:api','ability'])->group(function() {
-    Route::patch("roles/{role}/sync_permissions",'RoleController@syncPermissions')->name('roles.sync_permissions');
     Route::apiResource('roles', 'RoleController');
 });

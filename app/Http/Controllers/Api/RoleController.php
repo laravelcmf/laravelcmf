@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Role;
+use App\Services\RoleService;
 use Illuminate\Http\Request;
 use App\Http\Resources\RoleResource;
 use Illuminate\Support\Arr;
@@ -10,30 +11,34 @@ use Illuminate\Support\Arr;
 class RoleController extends Controller
 {
     /**
+     * 分页
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::query()->where(request_intersect(['name']))->paginate();
+        $roles = Role::query()->where('name', 'like', '%' . $request->get('name') . '%')->paginate();
         return RoleResource::collection($roles);
     }
 
-
     /**
+     * 新增
      * @param Request $request
      * @param Role    $role
      * @return RoleResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Role $role)
     {
         $this->validateRequest($request, 'store');
         $role->fill($request->all());
         $role->save();
+        app(RoleService::class)->syncPermissions($role, $request->get('menus', []));
         return new RoleResource($role);
     }
 
-
     /**
+     * 查看
      * @param Role $role
      * @return RoleResource
      */
@@ -42,52 +47,33 @@ class RoleController extends Controller
         return new RoleResource($role);
     }
 
-
     /**
+     * 更新
      * @param Request $request
      * @param Role    $role
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return RoleResource
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Role $role)
     {
         $this->validateRequest($request, 'update');
         $role->fill($request->all());
         $role->save();
-        return $this->noContent();
+
+        app(RoleService::class)->syncPermissions($role, $request->get('menus', []));
+        return new RoleResource($role);
     }
 
     /**
+     * 删除
      * @param Role $role
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
     public function destroy(Role $role)
     {
+        $role->menus()->detach();
         $role->delete();
         return $this->noContent();
-    }
-
-    /**
-     * @param Request $request
-     * @param Role    $role
-     */
-    public function syncPermissions(Request $request, Role $role)
-    {
-        if($menus = $request->get('menus')) {
-            $collection = collect($menus);
-            $collection->transform(function($item, $key) {
-                //FIXME:这里 actions resources 内容可以查询合法性，后续完善。。。
-                $actions = Arr::get($item,'actions',[]);
-                $resources = Arr::get($item,'resources',[]);
-                $actions = json_encode($actions);
-                $resources = json_encode($resources);
-                $item['action'] = $actions;
-                $item['resource'] = $resources;
-                unset($item['actions']);
-                unset($item['resources']);
-                return $item;
-            });
-            $role->menus()->sync($collection->all());
-        }
     }
 }
