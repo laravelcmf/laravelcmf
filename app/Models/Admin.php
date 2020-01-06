@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * Admin: JeffreyBool
+ * AdminQuery: JeffreyBool
  * Date: 2019/11/11
  * Time: 14:49
  */
@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * App\Models\Admin
+ * App\Models\AdminQuery
  * @property int                                                                                                            $id
  * @property string                                                                                                         $name          用户名
  * @property string                                                                                                         $email         邮箱

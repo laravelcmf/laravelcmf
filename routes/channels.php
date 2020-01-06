@@ -11,6 +11,6 @@
 |
 */
 
-Broadcast::channel('App.Admin.{id}', function ($user, $id) {
+Broadcast::channel('App.AdminQuery.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Admin;
-use App\Models\Menu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use App\Http\Queries\AdminQuery;
 use App\Http\Resources\AdminResource;
 
 class AdminController extends Controller
@@ -18,13 +17,14 @@ class AdminController extends Controller
 
     /**
      * admins paginate.
-     * @param Request $request
-     * @param Admin   $admin
+     * @param Request    $request
+     * @param AdminQuery $query
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(Request $request, Admin $admin)
+    public function index(Request $request, AdminQuery $query)
     {
-        return AdminResource::collection($admin->paginate());
+        $list = $query->where('name', 'like', '%' . $request->get('name') . '%')->where(request_intersect(['email', 'role_id']))->paginate($request->get('per_page'));
+        return AdminResource::collection($list);
     }
 
     /**

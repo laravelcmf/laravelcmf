@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Role;
-use App\Services\RoleService;
 use Illuminate\Http\Request;
+use App\Services\RoleService;
 use App\Http\Resources\RoleResource;
-use Illuminate\Support\Arr;
 
 class RoleController extends Controller
 {
@@ -17,7 +16,14 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        $roles = Role::query()->where('name', 'like', '%' . $request->get('name') . '%')->paginate($request->get('per_page'));
+        $roles = Role::query()->where('name', 'like',
+            '%' . $request->get('name') . '%')->paginate($request->get('per_page'));
+        return RoleResource::collection($roles);
+    }
+
+    public function list(Request $request)
+    {
+        $roles = Role::query()->where('name', 'like', '%' . $request->get('name') . '%')->get();
         return RoleResource::collection($roles);
     }
 

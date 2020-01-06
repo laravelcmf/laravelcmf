@@ -50,7 +50,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Admin Providers
+    | AdminQuery Providers
     |--------------------------------------------------------------------------
     |
     | All authentication drivers have a user provider. This defines how the
