@@ -15,7 +15,8 @@
         "laravel/passport": "^8.0",
         "laravel/tinker": "^1.0",
         "overtrue/laravel-query-logger": "^1.0",
-        "spatie/laravel-query-builder": "^2.3"
+        "spatie/laravel-query-builder": "^2.3",
+        "zhuzhichao/ip-location-zh": "^2.4"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

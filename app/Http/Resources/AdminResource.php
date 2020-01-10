@@ -13,6 +13,9 @@ class AdminResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        $address = join(array_unique(array_filter(\Ip::find($this->last_login_ip))), ' ');
+
         return [
             'id'            => $this->id,
             'name'          => $this->name,
@@ -21,6 +24,7 @@ class AdminResource extends JsonResource
             'role_id'       => $this->role_id,
             'login_count'   => $this->login_count,
             'last_login_ip' => $this->last_login_ip,
+            'login_address' => $address ? $address : null,
             'status'        => $this->status,
             "created_at"    => (string)$this->created_at,
             "updated_at"    => (string)$this->updated_at,
