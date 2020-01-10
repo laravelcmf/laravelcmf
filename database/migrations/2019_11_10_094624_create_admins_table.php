@@ -20,7 +20,7 @@ class CreateAdminsTable extends Migration
             $table->string('password')->comment('密码');
             $table->string('portrait', 128)->nullable()->comment('头像');
             $table->unsignedInteger('login_count')->default(0)->comment('登录次数');
-            $table->string('last_login_ip')->comment('最后登录IP');
+            $table->string('last_login_ip')->nullable()->comment('最后登录IP');
             $table->unsignedTinyInteger('status')->default(1)->comment('状态，1正常 2禁止 3删除');
             $table->timestamps();
         });

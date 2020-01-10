@@ -23,7 +23,10 @@ class AdminController extends Controller
      */
     public function index(Request $request, AdminQuery $query)
     {
-        $list = $query->where('name', 'like', '%' . $request->get('name') . '%')->where(request_intersect(['email', 'role_id']))->paginate($request->get('per_page'));
+        $list = $query->where('name', 'like', '%' . $request->get('name') . '%')->where(request_intersect([
+            'email',
+            'role_id'
+        ]))->paginate($request->get('per_page'));
         return AdminResource::collection($list);
     }
 
@@ -38,6 +41,7 @@ class AdminController extends Controller
     {
         $this->validateRequest($request);
         $admin->fill($request->all());
+        $admin->last_login_ip = $request->getClientIp();
         $admin->password = bcrypt($request->get('password'));
         $admin->save();
 
@@ -74,6 +78,28 @@ class AdminController extends Controller
     }
 
     /**
+     * 启用
+     * @param Admin $admin
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function enable(Admin $admin)
+    {
+        $admin->update(['status' => 1]);
+        return $this->noContent();
+    }
+
+    /**
+     * 禁用
+     * @param Admin $admin
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function disable(Admin $admin)
+    {
+        $admin->update(['status' => 2]);
+        return $this->noContent();
+    }
+
+    /**
      *  删除
      * @param Admin $admin
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
@@ -81,7 +107,7 @@ class AdminController extends Controller
      */
     public function destroy(Admin $admin)
     {
-        $admin->delete();
+        $admin->update(['status' => 3]);
         return $this->noContent();
     }
 
