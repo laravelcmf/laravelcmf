@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-$api = app(Dingo\Api\Routing\Router::class);
-foreach(glob(app()->basePath('routes/api/*.php')) as $filename) {
+$api = app('Dingo\Api\Routing\Router');
+foreach (glob(app()->basePath('routes/api/*.php')) as $filename) {
     include $filename;
 }
 

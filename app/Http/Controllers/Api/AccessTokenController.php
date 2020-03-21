@@ -46,7 +46,7 @@ class AccessTokenController extends BaseController
         try {
             return $server->respondToAccessTokenRequest($serverRequest, new Psr7Response)->withStatus(201);
         } catch (OAuthServerException $e) {
-            $this->response->errorUnauthorized();
+            $this->response->errorUnauthorized($e->getMessage());
         }
     }
 }
