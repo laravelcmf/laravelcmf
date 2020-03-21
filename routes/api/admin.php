@@ -11,7 +11,7 @@ $api->version('v1', [
     'middleware' => [
         'bindings',
         'auth:api',
-        'serializer'
+        'serializer:array'
     ],
 ], function($api) {
     $api->get('admins/me', 'AdminController@me')->name('admin.me');

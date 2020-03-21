@@ -10,7 +10,7 @@ $api->version('v1', [
     'namespace'  => 'App\Http\Controllers\Api',
     'middleware' =>[
         'api.throttle',
-        'serializer'
+        'serializer:array'
     ],
 ], function($api) {
     // 获取 token

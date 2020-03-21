@@ -32,7 +32,6 @@ class SerializerSwitch
     public function handle($request, Closure $next, $name = 'data_array')
     {
         $driver = $this->getDriver($name);
-
         app('Dingo\Api\Transformer\Factory')->setAdapter(function($app) use ($driver) {
             $fractal = new \League\Fractal\Manager;
             $serializer = new $driver;
