@@ -30,5 +30,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MenuResource extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'code',
+        'menu_id',
+        'method',
+        'path',
+    ];
 }

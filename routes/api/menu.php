@@ -6,8 +6,14 @@
  * Time: 04:04
  */
 
-//菜单
-Route::namespace('Api')->middleware(['auth:api', 'ability'])->group(function() {
-    Route::get('menus/tree', 'MenuController@tree')->name('menus.tree');
-    Route::apiResource('menus', 'MenuController');
+$api->version('v1', [
+    'namespace'  => 'App\Http\Controllers\Api',
+    'middleware' => [
+        'bindings',
+        'auth:api',
+        'serializer:array'
+    ],
+], function($api) {
+    $api->get('menus/tree', 'MenuController@tree')->name('menus.tree');
+    $api->resource('menus', 'MenuController');
 });

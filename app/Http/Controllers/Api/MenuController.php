@@ -6,7 +6,7 @@ use App\Models\Menu;
 use App\Models\MenuAction;
 use App\Models\MenuResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\MenuResource as MenuApiResource;
+use App\Http\Resources\MenuApiResource;
 
 class MenuController extends BaseController
 {
@@ -18,11 +18,11 @@ class MenuController extends BaseController
      */
     public function index(Request $request)
     {
-        $menus = tap(Menu::query(), function($query) {
-            $query->where(request_intersect(['hidden', 'parent_id']));
-        })->where('name', 'like', '%' . $request->get('name') . '%')->orderBy('sequence','asc')->paginate($request->get('per_page'));
+        $menus = Menu::where(request_intersect([
+            'hidden', 'parent_id'
+        ]))->where('name', 'like', '%' . $request->get('name') . '%')->orderBy('sequence', 'asc')->paginate($request->get('per_page'));
 
-        return $this->response->paginator($menus, new MenuApiResource());
+        return $this->response->paginator($menus, MenuApiResource::class);
     }
 
 
@@ -32,12 +32,12 @@ class MenuController extends BaseController
      */
     public function tree()
     {
-        $menus = tap(Menu::query(), function($query) {
-            $query->where(request_intersect(['name', 'hidden']));
-        })->where('parent_id', '=', null)->with('actions', 'resources', 'children')->orderBy('sequence', 'asc')->get();
+        $menus = Menu::where(request_intersect([
+            'name', 'hidden'
+        ]))->where('parent_id', '=', null)->with('actions', 'resources', 'children')->orderBy('sequence', 'asc')->get();
         $this->treeTransform($menus);
 
-        return $this->response->collection($menus, new MenuApiResource());
+        return $this->response->collection($menus, MenuApiResource::class);
     }
 
 
@@ -86,7 +86,11 @@ class MenuController extends BaseController
     }
 
 
-
+    /**
+     * menu info.
+     * @param Menu $menu
+     * @return \Dingo\Api\Http\Response
+     */
     public function show(Menu $menu)
     {
         $menu = Menu::query()->where("id", $menu->id)->with('actions', 'resources')->first();
@@ -96,10 +100,10 @@ class MenuController extends BaseController
 
 
     /**
-     * 更新
+     * menu update.
      * @param Request $request
      * @param Menu    $menu
-     * @return MenuApiResource
+     * @return \Dingo\Api\Http\Response
      * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Menu $menu)
@@ -128,6 +132,7 @@ class MenuController extends BaseController
         } else {
             $menu->actions()->where('menu_id', $menu->id)->delete();
         }
+
         // 菜单资源
         if($resources = $request->get('resources')) {
             $resources = collect($resources)->unique('code');
@@ -149,14 +154,14 @@ class MenuController extends BaseController
         } else {
             $menu->resources()->where('menu_id', $menu->id)->delete();
         }
-        return new MenuApiResource($menu);
+
+        return $this->response->item($menu, new MenuApiResource());
     }
 
 
     /**
-     * 删除
+     * menu delete.
      * @param Menu $menu
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
     public function destroy(Menu $menu)
@@ -164,6 +169,7 @@ class MenuController extends BaseController
         $menu->actions()->delete();
         $menu->resources()->delete();
         $menu->delete();
-        return $this->noContent();
+
+        $this->response->noContent();
     }
 }
