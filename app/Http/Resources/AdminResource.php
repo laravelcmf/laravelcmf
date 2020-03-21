@@ -39,7 +39,7 @@ class AdminResource extends TransformerAbstract
     public function includeRole(Admin $admin)
     {
         if($admin->role) {
-            return $this->item($admin->role, RoleResource::class);
+            return $this->item($admin->role, new RoleResource);
         }
     }
 }

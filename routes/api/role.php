@@ -6,8 +6,15 @@
  * Time: 00:58
  */
 
-//角色
-Route::namespace('Api')->middleware(['auth:api','ability'])->group(function() {
-    Route::get('roles/list', 'RoleController@list')->name('roles.list');
-    Route::apiResource('roles', 'RoleController');
+
+$api->version('v1', [
+    'namespace'  => 'App\Http\Controllers\Api',
+    'middleware' => [
+        'bindings',
+        'auth:api',
+        'serializer'
+    ],
+], function($api) {
+    $api->get('roles/list', 'RoleController@list')->name('roles.list');;
+    $api->resource('roles', 'RoleController');
 });
