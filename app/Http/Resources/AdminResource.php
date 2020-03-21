@@ -31,6 +31,7 @@ class AdminResource extends TransformerAbstract
         ];
     }
 
+
     /**
      * @param Admin $admin
      * @return \League\Fractal\Resource\Item
@@ -38,7 +39,7 @@ class AdminResource extends TransformerAbstract
     public function includeRole(Admin $admin)
     {
         if($admin->role) {
-            return $this->item($admin->role, new RoleTransformer());
+            return $this->item($admin->role, RoleResource::class);
         }
     }
 }

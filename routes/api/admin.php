@@ -9,7 +9,6 @@
 $api->version('v1', [
     'namespace'  => 'App\Http\Controllers\Api',
     'middleware' => [
-        'cors',
         'bindings',
         'auth:api',
         'serializer:array'
