@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class AdminController extends BaseController
 {
-    //管理员信息
+    // 管理员信息
     public function me()
     {
 
