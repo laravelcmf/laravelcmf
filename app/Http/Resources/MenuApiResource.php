@@ -13,7 +13,7 @@ use League\Fractal\TransformerAbstract;
 
 class MenuApiResource extends TransformerAbstract
 {
-    protected $availableIncludes = ['children', 'actions', 'resources'];
+    protected $availableIncludes = ['actions', 'resources'];
 
     public function transform(Menu $menu)
     {
@@ -30,18 +30,6 @@ class MenuApiResource extends TransformerAbstract
             "created_at"  => $menu->created_at->diffForHumans(),
             "updated_at"  => $menu->updated_at->diffForHumans(),
         ];
-    }
-
-
-    /**
-     * @param Menu $menu
-     * @return \League\Fractal\Resource\Collection
-     */
-    public function includeChildren(Menu $menu)
-    {
-        if($menu->children->isNotEmpty()) {
-            return $this->collection($menu->children, new MenuApiResource);
-        }
     }
 
 

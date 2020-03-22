@@ -29,7 +29,8 @@ class AdminController extends BaseController
     {
         $paginate = $admin->where('name', 'like', '%' . $request->get('name') . '%')->where(request_intersect([
             'email',
-            'role_id'
+            'role_id',
+            'status',
         ]))->paginate($request->get('per_page'));
 
         return $this->response->paginator($paginate, AdminResource::class);
@@ -82,7 +83,7 @@ class AdminController extends BaseController
         }
         $admin->save();
 
-        return $this->response->noContent();
+        return $this->response->item($admin, AdminResource::class);
     }
 
 
@@ -130,7 +131,7 @@ class AdminController extends BaseController
 
     /**
      * admin getMenus.
-     * @return \Dingo\Api\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getMenus()
     {
@@ -143,6 +144,8 @@ class AdminController extends BaseController
                 null)->orderBy('sequence', 'asc')->get();
         }
 
-        return $this->response->collection($menus, MenuApiResource::class);
+        return response()->json([
+            'data' => treeTransform($menus, true, true)
+        ]);
     }
 }

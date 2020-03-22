@@ -15,6 +15,13 @@ class RoleResource extends TransformerAbstract
 {
     public function transform(Role $role)
     {
+        $collection = collect(\DB::table('role_menus')->where('role_id', $role->id)->get());
+        $menus = $collection->map(function($item) {
+            $data['menu_id'] = $item->menu_id;
+            $data['actions'] = json_decode($item->action);
+            $data['resources'] = json_decode($item->resource);
+            return $data;
+        });
         return [
             "id"         => $role->id,
             "name"       => $role->name,
@@ -22,6 +29,7 @@ class RoleResource extends TransformerAbstract
             "sequence"   => $role->sequence,
             "created_at" => $role->created_at->diffForHumans(),
             "updated_at" => $role->updated_at->diffForHumans(),
+            "menus"      => $menus,
         ];
     }
 }

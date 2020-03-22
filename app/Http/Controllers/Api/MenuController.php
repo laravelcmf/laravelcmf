@@ -30,7 +30,7 @@ class MenuController extends BaseController
 
     /**
      * menu tree.
-     * @return \Dingo\Api\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function tree()
     {
@@ -39,7 +39,9 @@ class MenuController extends BaseController
             'hidden'
         ]))->where('parent_id', '=', null)->with('children')->orderBy('sequence', 'asc')->get();
 
-        return $this->response->collection($menus, MenuApiResource::class);
+        return response()->json([
+            'data' => treeTransform($menus,true,true),
+        ]);
     }
 
 

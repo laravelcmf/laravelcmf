@@ -26,10 +26,12 @@ trait HasPermission
         }
         foreach($role->menus as $menu) {
             foreach($menu->resources as $resource) {
+
                 if($resource->method == $method && $resource->path == $route) {
                     return true;
                 }
             }
         }
+        return false;
     }
 }

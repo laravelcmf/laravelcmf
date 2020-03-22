@@ -12,12 +12,13 @@ $api->version('v1', [
         'bindings',
         'auth:api',
         'serializer:array',
-        'ability',
     ],
 ], function($api) {
     $api->get('admins/me', 'AdminController@me')->name('admin.me');
     $api->get('admins/menus', 'AdminController@getMenus')->name('admin.menus');
-    $api->patch('admins/{admin}/enable', 'AdminController@enable')->name('admins.enable');
-    $api->patch('admins/{admin}/disable', 'AdminController@disable')->name('admins.disable');
-    $api->resource('admins', 'AdminController');
+    $api->group(['middleware' => 'ability'], function($api) {
+        $api->patch('admins/{admin}/enable', 'AdminController@enable')->name('admins.enable');
+        $api->patch('admins/{admin}/disable', 'AdminController@disable')->name('admins.disable');
+        $api->resource('admins', 'AdminController');
+    });
 });
