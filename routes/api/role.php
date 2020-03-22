@@ -12,7 +12,8 @@ $api->version('v1', [
     'middleware' => [
         'bindings',
         'auth:api',
-        'serializer:array'
+        'serializer:array',
+        'ability'
     ],
 ], function($api) {
     $api->get('roles/list', 'RoleController@list')->name('roles.list');;
