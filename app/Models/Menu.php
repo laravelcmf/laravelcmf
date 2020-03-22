@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Menu
+ *
  * @property int                             $id
  * @property int|null                        $parent_id   父级ID
  * @property string|null                     $parent_path 父级路径
@@ -32,18 +33,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereSequence($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MenuAction[] $actions
+ * @property-read int|null $actions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[] $children
+ * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MenuResource[] $resources
+ * @property-read int|null $resources_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read int|null $roles_count
  */
 class Menu extends Model
 {
     protected $fillable = [
+        'name',
         'parent_id',
         'parent_path',
-        'name',
-        'locale',
-        'sequence',
         'icon',
         'path',
-        'hidden'
+        'locale',
+        'hidden',
+        'sequence',
     ];
 
     /**

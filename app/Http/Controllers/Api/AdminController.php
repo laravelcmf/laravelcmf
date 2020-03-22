@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Menu;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Resources\AdminResource;
+use App\Http\Resources\MenuApiResource;
 
 class AdminController extends BaseController
 {
@@ -30,7 +32,7 @@ class AdminController extends BaseController
             'role_id'
         ]))->paginate($request->get('per_page'));
 
-        return $this->response->paginator($paginate,AdminResource::class);
+        return $this->response->paginator($paginate, AdminResource::class);
     }
 
 
@@ -126,8 +128,21 @@ class AdminController extends BaseController
     }
 
 
+    /**
+     * admin getMenus.
+     * @return \Dingo\Api\Http\Response
+     */
     public function getMenus()
     {
+        $role = $this->auth()->user()->role;
+        if($role && config('permission.role_id') && in_array($role->id, config('permission.role_id'))) {
+            $menus = Menu::where('parent_id', '=', null)->with('children', 'actions', 'resources')->orderBy('sequence',
+                'asc')->get();
+        } else {
+            $menus = $role->menus()->with('children', 'actions', 'resources')->where('parent_id', '=',
+                null)->orderBy('sequence', 'asc')->get();
+        }
 
+        return $this->response->collection($menus, MenuApiResource::class);
     }
 }

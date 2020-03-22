@@ -13,6 +13,11 @@ use League\Fractal\Serializer\ArraySerializer as BaseSerializer;
 
 class ArraySerializer extends BaseSerializer
 {
+    public function collection($resourceKey, array $data)
+    {
+        return [$resourceKey ?: 'data' => $data];
+    }
+
     /**
      * Serialize null resource.
      * @return array

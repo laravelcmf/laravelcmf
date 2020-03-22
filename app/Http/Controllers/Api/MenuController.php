@@ -19,8 +19,10 @@ class MenuController extends BaseController
     public function index(Request $request)
     {
         $menus = Menu::where(request_intersect([
-            'hidden', 'parent_id'
-        ]))->where('name', 'like', '%' . $request->get('name') . '%')->orderBy('sequence', 'asc')->paginate($request->get('per_page'));
+            'hidden',
+            'parent_id'
+        ]))->where('name', 'like', '%' . $request->get('name') . '%')->orderBy('sequence',
+            'asc')->paginate($request->get('per_page'));
 
         return $this->response->paginator($menus, MenuApiResource::class);
     }
@@ -33,28 +35,11 @@ class MenuController extends BaseController
     public function tree()
     {
         $menus = Menu::where(request_intersect([
-            'name', 'hidden'
-        ]))->where('parent_id', '=', null)->with('actions', 'resources', 'children')->orderBy('sequence', 'asc')->get();
-        $this->treeTransform($menus);
+            'name',
+            'hidden'
+        ]))->where('parent_id', '=', null)->with('children')->orderBy('sequence', 'asc')->get();
 
         return $this->response->collection($menus, MenuApiResource::class);
-    }
-
-
-    /**
-     * @param $menus
-     */
-    private function treeTransform($menus): void
-    {
-        $menus->transform(function($menu) {
-            $menu->actions;
-            $menu->resources;
-            if($menu->children) {
-                $this->treeTransform($menu->children);
-            }
-            unset($menu->pivot);
-            return $menu;
-        });
     }
 
 

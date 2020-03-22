@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Role
+ *
  * @property int                             $id
  * @property string                          $name     角色名称
  * @property string|null                     $memo     备注
@@ -22,6 +23,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereSequence($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Admin[] $admins
+ * @property-read int|null $admins_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[] $menus
+ * @property-read int|null $menus_count
  */
 class Role extends Model
 {
