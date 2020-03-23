@@ -16,7 +16,7 @@ $api->version('v1', [
 ], function($api) {
     $api->get('admins/me', 'AdminController@me')->name('admin.me');
     $api->get('admins/menus', 'AdminController@getMenus')->name('admin.menus');
-    $api->group(['middleware' => 'ability'], function($api) {
+    $api->group(['middleware' => 'authority'], function($api) {
         $api->patch('admins/{admin}/enable', 'AdminController@enable')->name('admins.enable');
         $api->patch('admins/{admin}/disable', 'AdminController@disable')->name('admins.disable');
         $api->resource('admins', 'AdminController');

@@ -12,7 +12,7 @@ $api->version('v1', [
         'bindings',
         'auth:api',
         'serializer:array',
-        'ability'
+        'authority'
     ],
 ], function($api) {
     $api->get('menus/tree', 'MenuController@tree')->name('menus.tree');

@@ -13,7 +13,7 @@ $api->version('v1', [
         'bindings',
         'auth:api',
         'serializer:array',
-        'ability'
+        'authority'
     ],
 ], function($api) {
     $api->get('roles/list', 'RoleController@list')->name('roles.list');;
