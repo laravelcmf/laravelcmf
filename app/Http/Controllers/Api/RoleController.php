@@ -16,8 +16,7 @@ class RoleController extends BaseController
      */
     public function index(Request $request)
     {
-        $roles = Role::query()->where('name', 'like',
-            '%' . $request->get('name') . '%')->paginate($request->get('per_page'));
+        $roles = Role::query()->where('name', 'like','%' . $request->get('name') . '%')->paginate($request->get('per_page'));
 
         return $this->response->paginator($roles, RoleResource::class);
     }

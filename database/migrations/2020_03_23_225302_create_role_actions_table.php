@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRoleMenusTable extends Migration
+class CreateRoleActionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateRoleMenusTable extends Migration
      */
     public function up()
     {
-        Schema::create('role_menus', function (Blueprint $table) {
+        Schema::create('role_actions', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('role_id')->index()->comment('角色ID');
-            $table->unsignedInteger('menu_id')->index()->comment('菜单ID');
+            $table->unsignedInteger('action_id')->index()->comment('动作ID');
             $table->timestamps();
         });
-        \Illuminate\Support\Facades\DB::statement("alter table `menu_resources` comment '角色菜单关联实体'");
+        \Illuminate\Support\Facades\DB::statement("alter table `role_actions` comment '角色动作关联实体'");
     }
 
     /**
@@ -29,6 +29,6 @@ class CreateRoleMenusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_menus');
+        Schema::dropIfExists('role_actions');
     }
 }

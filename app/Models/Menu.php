@@ -6,18 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Menu
- *
- * @property int                             $id
- * @property int|null                        $parent_id   父级ID
- * @property string|null                     $parent_path 父级路径
- * @property string                          $name        菜单名称
- * @property string|null                     $icon        图标
- * @property string|null                     $path        访问路由
- * @property string|null                     $locale      语言包配置
- * @property int                             $sequence    排序值
- * @property int                             $hidden      隐藏菜单: 0:不隐藏, 1:隐藏
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                                                                      $id
+ * @property int|null                                                                 $parent_id   父级ID
+ * @property string|null                                                              $parent_path 父级路径
+ * @property string                                                                   $name        菜单名称
+ * @property string|null                                                              $icon        图标
+ * @property string|null                                                              $path        访问路由
+ * @property string|null                                                              $locale      语言包配置
+ * @property int                                                                      $sequence    排序值
+ * @property int                                                                      $hidden      隐藏菜单: 0:不隐藏, 1:隐藏
+ * @property \Illuminate\Support\Carbon|null                                          $created_at
+ * @property \Illuminate\Support\Carbon|null                                          $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu query()
@@ -33,14 +32,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereSequence($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Menu whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MenuAction[] $actions
- * @property-read int|null $actions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[] $children
- * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MenuAction[]   $actions
+ * @property-read int|null                                                            $actions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[]         $children
+ * @property-read int|null                                                            $children_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MenuResource[] $resources
- * @property-read int|null $resources_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
- * @property-read int|null $roles_count
+ * @property-read int|null                                                            $resources_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[]         $roles
+ * @property-read int|null                                                            $roles_count
  */
 class Menu extends Model
 {
@@ -80,13 +79,5 @@ class Menu extends Model
     public function roles()
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
-    }
-
-    /*
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany(get_class($this), 'parent_id');
     }
 }

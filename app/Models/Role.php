@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Role
- *
- * @property int                             $id
- * @property string                          $name     角色名称
- * @property string|null                     $memo     备注
- * @property int                             $sequence 排序值
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int                                                               $id
+ * @property string                                                            $name     角色名称
+ * @property string|null                                                       $memo     备注
+ * @property int                                                               $sequence 排序值
+ * @property \Illuminate\Support\Carbon|null                                   $created_at
+ * @property \Illuminate\Support\Carbon|null                                   $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role query()
@@ -24,9 +23,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Admin[] $admins
- * @property-read int|null $admins_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[] $menus
- * @property-read int|null $menus_count
+ * @property-read int|null                                                     $admins_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Menu[]  $menus
+ * @property-read int|null                                                     $menus_count
  */
 class Role extends Model
 {
@@ -35,8 +34,8 @@ class Role extends Model
      */
     protected $fillable = [
         'name',
+        'memo',
         'sequence',
-        'memo'
     ];
 
 
@@ -57,5 +56,25 @@ class Role extends Model
     public function menus()
     {
         return $this->belongsToMany(Menu::class, 'role_menus')->withTimestamps();
+    }
+
+
+    /**
+     * 角色动作多对多关联.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function actions()
+    {
+        return $this->belongsToMany(MenuAction::class, 'role_actions')->withTimestamps();
+    }
+
+
+    /**
+     * 角色资源多对多关联.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function resources()
+    {
+        return $this->belongsToMany(MenuResource::class, 'role_resources')->withTimestamps();
     }
 }
