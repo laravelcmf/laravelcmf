@@ -37,7 +37,7 @@ class MenuController extends BaseController
         $menus = Menu::where(request_intersect([
             'name',
             'hidden'
-        ]))->orderBy('sequence', 'asc')->get();
+        ]))->with('actions','resources')->orderBy('sequence', 'asc')->get();
 
         return response()->json([
             'data' => make_tree($menus->toArray()),

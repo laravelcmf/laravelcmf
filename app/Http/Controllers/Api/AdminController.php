@@ -140,8 +140,26 @@ class AdminController extends BaseController
         if($role && is_root($role->id)) {
             $menus = Menu::with('actions', 'resources')->orderBy('sequence', 'ASC')->get();
         } else {
-            $menus = $role->menus()->with('actions', 'resources')->orderBy('sequence',
-                'ASC')->get()->makeHidden('pivot');
+            $menusIds = $role->menus()->get()->pluck('id')->toArray();
+            $pivot = \DB::table('role_menus')->where('role_id', $role->id)->whereIn('menu_id', $menusIds)->get();
+            $menus = $role->menus()->with(['actions', 'resources'])->orderBy('sequence', 'ASC')->get();
+            $menus->transform(function($menu) use ($pivot) {
+                $_temp = $pivot->where('menu_id', $menu->id)->first();
+                $menu->makeHidden('pivot');
+                if($menu->actions->isNotEmpty()) {
+                    $actions = $menu->actions;
+                    $actionCodes = json_decode($_temp->action);
+                    unset($menu->actions);
+                    $menu->actions = $actions->whereIn('code', $actionCodes);
+                }
+                if($menu->resources->isNotEmpty()) {
+                    $resources = $menu->resources;
+                    $resourcesCodes = json_decode($_temp->resource);
+                    unset($menu->resources);
+                    $menu->resources = $resources->whereIn('code', $resourcesCodes);
+                }
+                return $menu;
+            });
         }
 
         return response()->json([
