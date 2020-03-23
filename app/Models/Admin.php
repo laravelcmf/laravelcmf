@@ -10,7 +10,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * App\Models\Admin
- *
  * @property int                                                                                                            $id
  * @property string                                                                                                         $name          用户名
  * @property string                                                                                                         $email         邮箱
@@ -47,7 +46,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Admin extends Authenticatable
 {
-    use HasApiTokens, Notifiable,HasPermission;
+    use HasApiTokens, Notifiable, HasPermission;
 
     public const        Normal  = 1;
     public const        Hidden  = 2;

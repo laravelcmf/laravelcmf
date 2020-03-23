@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Menu;
 use App\Models\Admin;
+use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\AdminResource;
-use App\Http\Resources\MenuApiResource;
 
 class AdminController extends BaseController
 {
@@ -135,17 +135,17 @@ class AdminController extends BaseController
      */
     public function getMenus()
     {
-        $role = $this->auth()->user()->role;
-        if($role && config('permission.role_id') && in_array($role->id, config('permission.role_id'))) {
-            $menus = Menu::where('parent_id', '=', null)->with('children', 'actions', 'resources')->orderBy('sequence',
-                'asc')->get();
+        $admin = Auth::user();
+        $role = $admin->role;
+        if($role && is_root($role->id)) {
+            $menus = Menu::with('actions', 'resources')->orderBy('sequence', 'ASC')->get();
         } else {
-            $menus = $role->menus()->with('children', 'actions', 'resources')->where('parent_id', '=',
-                null)->orderBy('sequence', 'asc')->get();
+            $menus = $role->menus()->with('actions', 'resources')->orderBy('sequence',
+                'ASC')->get()->makeHidden('pivot');
         }
 
         return response()->json([
-            'data' => treeTransform($menus, true, true)
+            'data' => make_tree($menus->toArray()),
         ]);
     }
 }

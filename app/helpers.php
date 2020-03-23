@@ -1,5 +1,20 @@
 <?php
 
+if(!function_exists('is_root')) {
+    /**
+     * @param string $roleId
+     * @return bool
+     */
+    function is_root(string $roleId): bool
+    {
+        if(in_array($roleId, config('permission.role_id'))) {
+            return true;
+        }
+        return false;
+    }
+}
+
+
 if(!function_exists('request_intersect')) {
     /**
      * request intersect
@@ -39,33 +54,6 @@ if(!function_exists('make_tree')) {
         }
 
         return $tree;
-    }
-}
-
-if(!function_exists('treeTransform')) {
-    /**
-     * @param      $menus
-     * @param bool $isAction
-     * @param bool $isResource
-     * @return mixed
-     */
-    function treeTransform($menus,  $isAction = false,  $isResource = false)
-    {
-        $menus->transform(function($menu) use ($isAction, $isResource) {
-            if($isAction) {
-                $menu->actions;
-            }
-            if($isResource) {
-                $menu->resources;
-            }
-            if($menu->children) {
-                treeTransform($menu->children, $isAction, $isResource);
-            }
-            unset($menu->pivot);
-            return $menu;
-        });
-
-        return $menus;
     }
 }
 
